@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace EmblematicCoPlanner.Model;
 
 public class ProviderAvailability
 {
+    [Key]
     public Guid AvailabilityId { get; set; }
     public Guid ProviderId { get; set; }
     public string DaysAvailable { get; set; } // Enum/JSON to handle "Mon-Fri", "Sat-Sun", etc.
