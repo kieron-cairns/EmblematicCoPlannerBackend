@@ -2,6 +2,7 @@ namespace EmblematicCoPlanner.Model;
 
 public class ServiceProviderProfile
 {
+    [Key]
     public Guid ProviderId { get; set; }
     public Guid UserId { get; set; }
     public Guid TenantId { get; set; }
