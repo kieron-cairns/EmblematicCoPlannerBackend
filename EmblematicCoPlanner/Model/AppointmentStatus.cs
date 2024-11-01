@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace EmblematicCoPlanner.Model;
 
 public class AppointmentStatus
 {
+    [Key]
     public Guid StatusId { get; set; }
     public Guid AppointmentId { get; set; }
     public bool? IsAccepted { get; set; }
