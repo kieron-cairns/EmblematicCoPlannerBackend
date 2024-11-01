@@ -8,5 +8,6 @@ public class AppointmentStatus
     public string Status { get; set; }
     public DateTime UpdatedAt { get; set; }
 
+    // Navigation property
     public Appointment Appointment { get; set; }
 }

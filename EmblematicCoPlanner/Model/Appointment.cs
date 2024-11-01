@@ -14,6 +14,7 @@ public class Appointment
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
+    // Navigation properties
     public Client Client { get; set; }
     public ServiceProviderProfile Provider { get; set; }
     public Service Service { get; set; }

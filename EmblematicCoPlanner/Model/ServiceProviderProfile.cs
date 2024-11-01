@@ -4,7 +4,7 @@ public class ServiceProviderProfile
 {
     public Guid ProviderId { get; set; }
     public Guid UserId { get; set; }
-    public Guid tenantId { get; set; }
+    public Guid TenantId { get; set; }
     public string BusinessName { get; set; }
     public string Category { get; set; }
     public string Location { get; set; }
@@ -13,6 +13,7 @@ public class ServiceProviderProfile
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
+    // Navigation properties
     public User User { get; set; }
     public ICollection<Service> ServicesOffered { get; set; }
     public ICollection<ProviderAvailability> Availabilities { get; set; }
