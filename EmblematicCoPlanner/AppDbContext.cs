@@ -6,7 +6,7 @@ namespace EmblematicCoPlanner;
 using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
-    {
+{
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // DbSet properties for each entity
@@ -21,18 +21,32 @@ public class AppDbContext : DbContext
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
 
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure unique index for emails within each tenant
+            // Configure unique index for emails within each tenant for the User entity
             modelBuilder.Entity<User>()
                 .HasIndex(u => new { u.Email, u.TenantId })
                 .IsUnique();
 
-            // User and ServiceProviderProfile - One-to-One relationship
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.ServiceProviderProfile)
-                .WithOne(sp => sp.User)
+            // Define the one-to-one relationship between User and ServiceProviderProfile
+            modelBuilder.Entity<ServiceProviderProfile>()
+                .HasOne(sp => sp.User)
+                .WithOne(u => u.ServiceProviderProfile)
                 .HasForeignKey<ServiceProviderProfile>(sp => sp.UserId);
+
+            // Notification and User - Optional Many-to-One relationship
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Define the one-to-one relationship between Appointment and AppointmentStatus
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Status)
+                .WithOne(s => s.Appointment)
+                .HasForeignKey<AppointmentStatus>(s => s.AppointmentId);
 
             // ServiceProviderProfile and Services - One-to-Many relationship
             modelBuilder.Entity<ServiceProviderProfile>()
@@ -52,30 +66,19 @@ public class AppDbContext : DbContext
                 .WithOne(a => a.Client)
                 .HasForeignKey(a => a.ClientId);
 
-            // Appointment and AppointmentStatus - One-to-One relationship
-            modelBuilder.Entity<Appointment>()
-                .HasOne(a => a.Status)
-                .WithOne(s => s.Appointment)
-                .HasForeignKey<AppointmentStatus>(s => s.AppointmentId);
-
             // Appointment and Provider (ServiceProviderProfile) - Many-to-One relationship
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Provider)
                 .WithMany()
-                .HasForeignKey(a => a.ProviderId);
+                .HasForeignKey(a => a.ProviderId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
 
             // Appointment and Service - Many-to-One relationship
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Service)
                 .WithMany()
-                .HasForeignKey(a => a.ServiceId);
-
-            // Notification and User - Optional Many-to-One relationship
-            modelBuilder.Entity<Notification>()
-                .HasOne(n => n.User)
-                .WithMany()
-                .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.SetNull); // Keep notifications even if the user is deleted
+                .HasForeignKey(a => a.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
 
             // Notification and Appointment - Many-to-One relationship
             modelBuilder.Entity<Notification>()
@@ -101,5 +104,14 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(i => i.TenantId)
                 .OnDelete(DeleteBehavior.Cascade); // Cascade delete invitations if ServiceProviderProfile is deleted
+
+            // Configure precision and scale for decimal properties
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18,2)"); // Adjust precision and scale as needed
+
+            modelBuilder.Entity<Service>()
+                .Property(s => s.Price)
+                .HasColumnType("decimal(18,2)"); // Adjust precision and scale as needed
         }
-    }
+}

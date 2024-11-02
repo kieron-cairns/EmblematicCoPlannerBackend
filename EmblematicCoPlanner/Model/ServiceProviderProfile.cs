@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace EmblematicCoPlanner.Model;
 
 public class ServiceProviderProfile
