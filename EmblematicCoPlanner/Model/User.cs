@@ -5,6 +5,7 @@ public class User
     public Guid UserId { get; set; }
     public Guid? TenantId { get; set; } // Nullable if tenant is not always assigned
     public string Name { get; set; }
+    public string Organisation { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Role { get; set; }

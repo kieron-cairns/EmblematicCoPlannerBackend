@@ -20,7 +20,6 @@ public class AppDbContext : DbContext
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
-
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
